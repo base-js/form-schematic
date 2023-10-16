@@ -9,7 +9,6 @@ export enum SchemaVariant {
   "FORM" = "FORM"
 }
 
-
 export type SchemaProperties<Properties> = {
   [K in keyof Properties]?: ({
     value?: Properties[K],
@@ -23,6 +22,9 @@ export type SchemaProperties<Properties> = {
     )[]
   })
 }
+
+export type SchemaPropertiesInitiate<Properties> = Partial<{ disabled: boolean; hidden: boolean; } & SchemaProperties<Properties>>
+
 
 export type SchemaRule = {
   condition: Expression;
@@ -47,7 +49,7 @@ export type SchemaCore = {
   id?: string;
   variant: SchemaVariant;
   component: string;
-  properties: Record<string, any>;
+  properties: any;
   config: Record<string, any>;
   rules?: SchemaRule[];
   on?: Record<string, any>;
@@ -58,20 +60,20 @@ export interface SchemaCoreField<Value, Properties = Record<string, any>, Config
   variant: SchemaVariant.FIELD,
   rules: SchemaRule[];
   config: Config & { name: string; defaultValue?: Value; };
-  properties: SchemaProperties<Properties & { disabled: boolean; hidden: boolean; }>;
+  properties: SchemaPropertiesInitiate<Properties>;
   on?: SchemaOn;
 }
 
 export interface SchemaCoreView<Properties = Record<string, any>, Config = Record<string, any>,> extends SchemaCore {
   variant: SchemaVariant.VIEW,
   config: Config & { name?: string; };
-  properties: SchemaProperties<Properties & { disabled: boolean; hidden: boolean; }>;
+  properties: SchemaPropertiesInitiate<Properties>;
 }
 
 export interface SchemaCoreGroup<Properties = Record<string, any>, Config = Record<string, any>> extends SchemaCore {
   variant: SchemaVariant.GROUP,
   config: Config & { name?: string; };
-  properties: SchemaProperties<Properties & { disabled: boolean; hidden: boolean; }>;
+  properties: SchemaPropertiesInitiate<Properties>;
 }
 
 export interface SchemaCoreFieldArray<Value, Properties = Record<string, any>, Config = Record<string, any>> extends SchemaCore {
@@ -79,7 +81,7 @@ export interface SchemaCoreFieldArray<Value, Properties = Record<string, any>, C
   rules: SchemaRule[];
   on?: SchemaOn;
   config: Config & { name: string; defaultValue?: Value; uniqueKey: string; };
-  properties: SchemaProperties<Properties & { disabled: boolean; hidden: boolean; }>;
+  properties: SchemaPropertiesInitiate<Properties>;
 }
 
 export interface SchemaCoreFieldObject<Value, Properties = Record<string, any>, Config = Record<string, any>> extends SchemaCore {
@@ -87,7 +89,7 @@ export interface SchemaCoreFieldObject<Value, Properties = Record<string, any>, 
   rules: SchemaRule[];
   on?: SchemaOn;
   config: Config & { name: string; defaultValue?: Value };
-  properties: SchemaProperties<Properties & { disabled: boolean; hidden: boolean; }>;
+  properties: SchemaPropertiesInitiate<Properties>;
 }
 
 export interface SchemaFieldDefault extends SchemaCoreField<
@@ -142,28 +144,3 @@ export interface SchemaFieldObjectDefault extends SchemaCoreFieldObject<
 }
 
 export type SchemaDefault = SchemaFieldDefault | SchemaFieldViewDefault | SchemaGroupDefault | SchemaFieldArrayDefault | SchemaFieldObjectDefault
-
-const fieldDefault: SchemaFieldDefault = {
-  variant: SchemaVariant.FIELD,
-  component: 'DEFAULT',
-  properties: {
-    title: {
-      value: 'sdf',
-      reference: ''
-    },
-    subtitle: {
-      conditions: [
-        {
-          condition: '',
-          reference: '',
-          value: ''
-        }
-      ]
-    }
-  },
-  rules: [],
-  config: {
-    defaultValue: '',
-    name: ""
-  }
-}

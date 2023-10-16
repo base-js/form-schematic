@@ -11,11 +11,9 @@ import { FormContext } from "../contexts/FormContext";
 import generateId from "../utils/generateId";
 import useSubscribe from "./useSubscribe";
 
-// eslint-disable-next-line no-use-before-define
 export const useField = <Schema extends SchemaCore>(props: {
   ctx?: Form<Schema>;
   schema: Schema;
-  // eslint-disable-next-line no-unused-vars
   log?: () => void;
 }) => {
   const { ctx: context } = useContext(FormContext);
@@ -44,10 +42,13 @@ export const useField = <Schema extends SchemaCore>(props: {
     };
   }, [identity]);
 
+  const state = ctx.getFieldState<
+    // eslint-disable-next-line no-use-before-define
+    Schema["config"]["defaultValue"], { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] }
+  >(schema);
+
   return {
-    state: ctx.getFieldState<
-      Schema["config"]["defaultValue"], { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] }
-    >(schema),
+    state,
     ctx,
     formState: ctx.state.formState,
     ref: _ref,
@@ -65,26 +66,12 @@ export const useField = <Schema extends SchemaCore>(props: {
       () => ctx.updateTouch(identity),
       [identity, ctx],
     ),
+    getProp: useCallback(
+      // eslint-disable-next-line no-undef
+      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key],
+      [identity, state, schema],
+    ),
   };
 };
 
 export default useField;
-
-// const x = () => {
-//   const ctx = useForm<SchemaDefault>({
-//     initialValues: {},
-//     schemas: [],
-//     extraData: {},
-//   });
-//   const res = useField<SchemaFieldArrayDefault>({
-//     schema: {
-
-//     } as any,
-//   });
-//   type x = NonNullable<SchemaFieldArrayDefault['properties']['disabled']>['value']
-//   res.field.props.
-
-//   return null;
-// };
-
-// console.log(x);
