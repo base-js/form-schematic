@@ -1,26 +1,26 @@
 import { FC, createContext } from "react";
 import { SchemaCore, SchemaVariant } from "../types";
 
-export type FormUiFieldProps<Schema extends SchemaCore = SchemaCore> = {
+export type FormUiFieldProps<Schema extends SchemaCore = any> = {
   schema: Schema;
   wrapper?: any;
   schemas?: any[];
 }
 
-export type FormUiViewProps<Schema extends SchemaCore = SchemaCore> = {
+export type FormUiViewProps<Schema extends SchemaCore = any> = {
   schema: Schema;
   wrapper?: any;
   schemas?: any[];
 }
 
-export type FormUiGroupProps<Schema extends SchemaCore = SchemaCore> = {
+export type FormUiGroupProps<Schema extends SchemaCore = any> = {
   schema: Schema;
   wrapper?: any;
   children: any;
   schemas?: any[];
 };
 
-export type FormUiFieldArrayProps<Schema extends SchemaCore = SchemaCore> = {
+export type FormUiFieldArrayProps<Schema extends SchemaCore = any> = {
   schema: Schema;
   wrapper?: any;
   schemas?: any[];
@@ -36,7 +36,7 @@ export type FormUiFieldArrayProps<Schema extends SchemaCore = SchemaCore> = {
   }>
 };
 
-export type FormUiFieldObjectProps<Schema extends SchemaCore = SchemaCore> = {
+export type FormUiFieldObjectProps<Schema extends SchemaCore = any> = {
   schema: Schema;
   wrapper?: any;
   schemas?: any[];
