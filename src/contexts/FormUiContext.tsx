@@ -1,7 +1,7 @@
 import { FC, createContext } from "react";
 import { SchemaVariant } from "../types";
 
-export const FormUiContext = createContext<{
+export type FormUiContextValue = {
   components: {
     [SchemaVariant.FIELD]: Record<string, FC<any>>
     [SchemaVariant.VIEW]: Record<string, FC<any>>
@@ -48,7 +48,9 @@ export const FormUiContext = createContext<{
       }>
     }
   }
-}>({
+}
+
+export const FormUiContext = createContext<FormUiContextValue>({
   components: {
     [SchemaVariant.FIELD]: {},
     [SchemaVariant.VIEW]: {},
@@ -59,7 +61,7 @@ export const FormUiContext = createContext<{
 });
 
 export const FormUiProvider: FC<{
-  value: any;
+  value: FormUiContextValue;
   children: any;
 }> = ({ value, children }) => (
   <FormUiContext.Provider value={value}>
