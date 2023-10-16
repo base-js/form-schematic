@@ -1,51 +1,69 @@
 import { FC, createContext } from "react";
-import { SchemaVariant } from "../types";
+import { SchemaCore, SchemaVariant } from "../types";
+
+export type FormUiFieldProps<Schema extends SchemaCore = SchemaCore> = {
+  schema: Schema;
+  wrapper?: any;
+  schemas?: any[];
+}
+
+export type FormUiViewProps<Schema extends SchemaCore = SchemaCore> = {
+  schema: Schema;
+  wrapper?: any;
+  schemas?: any[];
+}
+
+export type FormUiGroupProps<Schema extends SchemaCore = SchemaCore> = {
+  schema: Schema;
+  wrapper?: any;
+  children: any;
+  schemas?: any[];
+};
+
+export type FormUiFieldArrayProps<Schema extends SchemaCore = SchemaCore> = {
+  schema: Schema;
+  wrapper?: any;
+  schemas?: any[];
+  children: FC<{
+    value: Schema["config"]["defaultValue"],
+    container: FC<{
+      children: any;
+      schema: Schema;
+      index: number;
+      containerProps?: Record<string, any>;
+    }>;
+    containerProps?: Record<string, any>
+  }>
+};
+
+export type FormUiFieldObjectProps<Schema extends SchemaCore = SchemaCore> = {
+  schema: Schema;
+  wrapper?: any;
+  schemas?: any[];
+  children: FC<{
+    value: Record<string, any>,
+    container: FC<{
+      children: any;
+      schema: Schema;
+      index: number;
+      containerProps?: Record<string, any>;
+    }>
+    containerProps?: Record<string, any>
+  }>
+};
 
 export type FormUiContextValue = {
   components: {
-    [SchemaVariant.FIELD]: Record<string, FC<any>>
-    [SchemaVariant.VIEW]: Record<string, FC<any>>
+    [SchemaVariant.FIELD]: Record<string, FC<FormUiFieldProps>>
+    [SchemaVariant.VIEW]: Record<string, FC<FormUiViewProps>>
     [SchemaVariant.FIELD_ARRAY]: {
-      [key: string]: FC<{
-        schema: any;
-        wrapper?: any;
-        schemas?: any[];
-        children: FC<{
-          value: any[],
-          container: FC<{
-            children: any;
-            schema: any;
-            index: number;
-            containerProps?: Record<string, any>;
-          }>;
-          containerProps?: Record<string, any>
-        }>
-      }>
+      [key: string]: FC<FormUiFieldArrayProps>
     }
     [SchemaVariant.FIELD_OBJECT]: {
-      [key: string]: FC<{
-        schema: any;
-        wrapper?: any;
-        schemas?: any[];
-        children: FC<{
-          value: any[],
-          container: FC<{
-            children: any;
-            schema: any;
-            index: number;
-            containerProps?: Record<string, any>;
-          }>;
-          containerProps?: Record<string, any>
-        }>
-      }>
+      [key: string]: FC<FormUiFieldObjectProps>
     },
     [SchemaVariant.GROUP]: {
-      [key: string]: FC<{
-        schema: any;
-        wrapper?: any;
-        children: any;
-        schemas?: any[];
-      }>
+      [key: string]: FC<FormUiGroupProps>
     }
   }
 }
