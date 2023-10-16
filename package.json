@@ -84,7 +84,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/adyfk/form-schematic.git"
+    "url": "https://github.com/base-js/form-schematic.git"
   },
   "keywords": [
     "react",
@@ -125,6 +125,6 @@
     ]
   },
   "bugs": {
-    "url": "https://github.com/adyfk/form-schematic/issues"
+    "url": "https://github.com/base-js/form-schematic.git/issues"
   }
 }
