@@ -1,5 +1,5 @@
 /* eslint-disable import/newline-after-import */
-const path = require('path');
+const path = require("path");
 const productionPlugins = [
   // ['babel-plugin-react-remove-properties'],
 ];
@@ -12,68 +12,68 @@ module.exports = function getBabelConfig(api) {
       process.cwd(),
       path.resolve(__dirname, relativeToBabelConf),
     );
-    return `./${resolvedPath.replace('\\', '/')}`;
+    return `./${resolvedPath.replace("\\", "/")}`;
   }
 
   const defaultAlias = {
-    atoms: resolveAliasPath('./src/atoms'),
-    logic: resolveAliasPath('./src/logic'),
-    src: resolveAliasPath('./src'),
-    utlis: resolveAliasPath('./utlis'),
+    atoms: resolveAliasPath("./src/atoms"),
+    logic: resolveAliasPath("./src/logic"),
+    src: resolveAliasPath("./src"),
+    utlis: resolveAliasPath("./utlis"),
   };
 
   const presets = [
     [
-      '@babel/preset-env',
+      "@babel/preset-env",
       {
         bugfixes: true,
         browserslistEnv: process.env.BABEL_ENV || process.env.NODE_ENV,
         debug: false,
-        modules: useESModules ? false : 'commonjs',
-        shippedProposals: api.env('modern'),
+        modules: useESModules ? false : "commonjs",
+        shippedProposals: api.env("modern"),
       },
     ],
     [
-      '@babel/preset-react',
+      "@babel/preset-react",
       {
-        runtime: 'automatic',
+        runtime: "automatic",
       },
     ],
-    ['@babel/preset-typescript', { allowNamespaces: true }],
+    ["@babel/preset-typescript", { allowNamespaces: true }],
   ];
 
   const plugins = [
     // Need the following 3 proposals for all targets in .browserslistrc.
     // With our usage the transpiled loose mode is equivalent to spec mode.
-    ['@babel/plugin-proposal-class-properties', { loose: true }],
-    ['@babel/plugin-proposal-private-methods', { loose: true }],
-    ['@babel/plugin-proposal-private-property-in-object', { loose: true }],
-    ['@babel/plugin-proposal-object-rest-spread', { loose: true }],
+    ["@babel/plugin-proposal-class-properties", { loose: true }],
+    ["@babel/plugin-proposal-private-methods", { loose: true }],
+    ["@babel/plugin-proposal-private-property-in-object", { loose: true }],
+    ["@babel/plugin-proposal-object-rest-spread", { loose: true }],
     [
-      '@babel/plugin-transform-runtime',
+      "@babel/plugin-transform-runtime",
       {
         useESModules,
         // any package needs to declare 7.4.4 as a runtime dependency. default is ^7.0.0
-        version: '^7.4.4',
+        version: "^7.4.4",
       },
     ],
     [
-      'babel-plugin-transform-react-remove-prop-types',
+      "babel-plugin-transform-react-remove-prop-types",
       {
-        mode: 'unsafe-wrap',
+        mode: "unsafe-wrap",
       },
     ],
-    ['babel-plugin-transform-import-aliases', { aliases: defaultAlias }],
+    ["babel-plugin-transform-import-aliases", { aliases: defaultAlias }],
     [
-      'module-resolver',
+      "module-resolver",
       {
-        root: ['./'],
+        root: ["./"],
         alias: defaultAlias,
       },
     ],
   ];
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     plugins.push(...productionPlugins);
   }
 
@@ -87,12 +87,12 @@ module.exports = function getBabelConfig(api) {
     overrides: [
       {
         exclude: /\.test\.(js|ts|tsx)$/,
-        plugins: ['@babel/plugin-transform-react-constant-elements'],
+        plugins: ["@babel/plugin-transform-react-constant-elements"],
       },
     ],
     env: {
       coverage: {
-        plugins: ['babel-plugin-istanbul'],
+        plugins: ["babel-plugin-istanbul"],
       },
       benchmark: {
         plugins: [...productionPlugins],
