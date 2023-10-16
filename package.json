@@ -1,5 +1,5 @@
 {
-  "name": "form-schematic",
+  "name": "form-trial",
   "version": "0.0.0-development",
   "license": "MIT",
   "private": false,
@@ -34,7 +34,8 @@
     "build:copy-files": "node scripts/copy-files.js",
     "semantic-release": "semantic-release",
     "docs": "typedoc src --out docs",
-    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src"
+    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src",
+    "force-publish": "npm run build && cd ./dist && npm publish"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.0",
