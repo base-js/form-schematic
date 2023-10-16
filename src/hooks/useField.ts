@@ -42,10 +42,7 @@ export const useField = <Schema extends SchemaCore>(props: {
     };
   }, [identity]);
 
-  const state = ctx.getFieldState<
-    // eslint-disable-next-line no-use-before-define
-    Schema["config"]["defaultValue"], { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] }
-  >(schema);
+  const state = ctx.getFieldState(schema);
 
   return {
     state,
@@ -68,7 +65,7 @@ export const useField = <Schema extends SchemaCore>(props: {
     ),
     getProp: useCallback(
       // eslint-disable-next-line no-undef
-      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key],
+      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key].value,
       [identity, state, schema],
     ),
   };

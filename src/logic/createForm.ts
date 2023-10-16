@@ -159,29 +159,25 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     return _state.props[id]?.[name];
   }
 
-  function getFieldState<
-    Value = any,
-    FieldProps = ObjectType,
-  >(schema: Schema) {
+  function getFieldState<Schema extends SchemaCore>(schema: Schema) {
     const id = getSchemaId(schema);
-
     return {
-      value: getValue(id) as Value,
+      value: getValue(id) as Schema["config"]["defaultValue"],
       error: getError(id),
       touched: getTouch(id),
-      props: _state.props[id] as FieldProps,
+      props: (_state.props[id] || {}) as { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] },
     };
   }
 
   function getViewState<
     Value = any,
-    FieldProps = ObjectType,
+    Schema extends SchemaCore = SchemaCore,
   >(schema: Schema) {
     const id = getSchemaId(schema);
 
     return {
       value: getValue(id) as Value,
-      props: _state.props[id] as FieldProps,
+      props: _state.props[id] as { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] },
     };
   }
 

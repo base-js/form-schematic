@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import {
   useCallback,
   useContext,
@@ -49,10 +50,10 @@ export const useFieldArray = <Schema extends SchemaCore = SchemaCore>(props: {
     };
   }, [identity]);
 
+  const state = ctx.getFieldState(schema);
+
   return {
-    state: ctx.getFieldState<
-      Schema["config"]["defaultValue"], { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] }
-    >(schema as any),
+    state,
     formState: ctx.state.formState,
     ref: _ref,
     ctx,
@@ -69,6 +70,11 @@ export const useFieldArray = <Schema extends SchemaCore = SchemaCore>(props: {
     onBlur: useCallback(
       () => ctx.updateTouch(identity),
       [identity, ctx],
+    ),
+    getProp: useCallback(
+      // eslint-disable-next-line no-undef
+      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key].value,
+      [state, schema],
     ),
   };
 };

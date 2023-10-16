@@ -23,7 +23,7 @@ export type SchemaProperties<Properties> = {
   })
 }
 
-export type SchemaPropertiesInitiate<Properties> = Partial<{ disabled: boolean; hidden: boolean; } & SchemaProperties<Properties>>
+export type SchemaPropertiesInitiate<Properties> = Partial<SchemaProperties<Properties & { disabled: boolean; hidden: boolean; }>>
 
 
 export type SchemaRule = {

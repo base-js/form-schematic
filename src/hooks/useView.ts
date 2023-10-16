@@ -1,4 +1,5 @@
-import { useContext } from "react";
+/* eslint-disable no-use-before-define */
+import { useCallback, useContext } from "react";
 import { SchemaCore } from "../types";
 import { Form } from "../logic/createForm";
 import { FormContext } from "../contexts/FormContext";
@@ -20,11 +21,16 @@ export const useView = <Schema extends SchemaCore = SchemaCore, Value = any>(pro
     },
   });
 
+  const state = ctx.getViewState<Value>(schema);
+
   return {
-    state: ctx.getViewState<
-      Value, { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] }
-    >(schema),
+    state,
     ctx,
+    getProp: useCallback(
+      // eslint-disable-next-line no-undef
+      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key].value,
+      [state, schema],
+    ),
   };
 };
 
