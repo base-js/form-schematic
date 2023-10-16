@@ -32,7 +32,7 @@
     "build:stable": "node scripts/build.js stable",
     "build:typescript": "npx tsc --emitDeclarationOnly",
     "build:copy-files": "node scripts/copy-files.js",
-    "semantic-release": "semantic-release --branches master",
+    "semantic-release": "semantic-release",
     "docs": "typedoc src --out docs",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src"
   },
@@ -68,7 +68,7 @@
   },
   "release": {
     "branches": [
-      "master",
+      "main",
       "next"
     ],
     "plugins": [
