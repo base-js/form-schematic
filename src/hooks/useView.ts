@@ -28,7 +28,7 @@ export const useView = <Schema extends SchemaCore = SchemaCore, Value = any>(pro
     ctx,
     getProp: useCallback(
       // eslint-disable-next-line no-undef
-      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key].value,
+      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key]?.value,
       [state, schema],
     ),
   };

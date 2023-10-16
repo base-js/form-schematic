@@ -65,7 +65,7 @@ export const useField = <Schema extends SchemaCore>(props: {
     ),
     getProp: useCallback(
       // eslint-disable-next-line no-undef
-      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key].value,
+      <K extends keyof Schema["properties"]>(key: K): NonNullable<Schema["properties"][K]>["value"] => state.props?.[key] ?? schema.properties[key]?.value,
       [identity, state, schema],
     ),
   };
