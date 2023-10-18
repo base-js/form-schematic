@@ -83,6 +83,8 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
             schemas={schema.childs}
             loading={Loading}
             error={Error}
+            wrapper={wrapper}
+            groupId={generatedGroupId}
           />
         </Component>
       </Suspense>
@@ -114,6 +116,7 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
                     groupId={generatedGroupId}
                     loading={Loading}
                     error={Error}
+                    wrapper={wrapper}
                   />
                 </Container>
               ))}
@@ -146,6 +149,8 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
                 schemas={schema.childs}
                 loading={Loading}
                 error={Error}
+                wrapper={wrapper}
+                groupId={generatedGroupId}
               />
             </Container>
           )}
