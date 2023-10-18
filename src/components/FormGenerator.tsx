@@ -4,7 +4,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable consistent-return */
 /* eslint-disable react/jsx-key */
-import { FC, Fragment, Suspense, useContext, useMemo } from "react";
+import { FC, Fragment, useContext, useMemo } from "react";
 import { Form, getSchemaName } from "../logic/createForm";
 import { FormContext } from "../contexts";
 import { SchemaCore } from "../types";
@@ -45,12 +45,10 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
     if (!Component) return <Error schema={schema} message="Component not found" />;
 
     return (
-      <Suspense fallback={<Loading schema={schema} />}>
-        <Component
-          wrapper={wrapper}
-          schema={updateSchemaConfigName(schema, identity)}
-        />
-      </Suspense>
+      <Component
+        wrapper={wrapper}
+        schema={updateSchemaConfigName(schema, identity)}
+      />
     );
   }
 
@@ -59,12 +57,10 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
     if (!Component) return <Error schema={schema} message="Component not found" />;
 
     return (
-      <Suspense fallback={<Loading schema={schema} />}>
-        <Component
-          wrapper={wrapper}
-          schema={updateSchemaConfigName(schema, identity)}
-        />
-      </Suspense>
+      <Component
+        wrapper={wrapper}
+        schema={updateSchemaConfigName(schema, identity)}
+      />
     );
   }
 
@@ -73,21 +69,19 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
     if (!Component) return <Error schema={schema} message="Component not found" />;
 
     return (
-      <Suspense fallback={<Loading schema={schema} />}>
-        <Component
+      <Component
+        wrapper={wrapper}
+        schema={schema}
+      >
+        <FormGenerator
+          parent={parent}
+          schemas={schema.childs}
+          loading={Loading}
+          error={Error}
           wrapper={wrapper}
-          schema={schema}
-        >
-          <FormGenerator
-            parent={parent}
-            schemas={schema.childs}
-            loading={Loading}
-            error={Error}
-            wrapper={wrapper}
-            groupId={generatedGroupId}
-          />
-        </Component>
-      </Suspense>
+          groupId={generatedGroupId}
+        />
+      </Component>
     );
   }
 
@@ -96,34 +90,32 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
     if (!Component) return <Error schema={schema} message="Component not found" />;
 
     return (
-      <Suspense fallback={<Loading schema={schema} />}>
-        <Component
-          wrapper={wrapper}
-          schema={schema}
-        >
-          {({ value, container: Container, containerProps }, indexContainer) => (
-            <Fragment key={indexContainer}>
-              {value?.map((_: any, indexValue: number) => (
-                <Container
-                  index={indexValue}
-                  schema={schema}
-                  key={`${parent}-${identity}-${indexContainer}-${indexValue}-${generatedGroupId}`}
-                  containerProps={containerProps}
-                >
-                  <FormGenerator
-                    parent={`${identity}.${indexValue}`}
-                    schemas={schema.childs}
-                    groupId={generatedGroupId}
-                    loading={Loading}
-                    error={Error}
-                    wrapper={wrapper}
-                  />
-                </Container>
-              ))}
-            </Fragment>
-          )}
-        </Component>
-      </Suspense>
+      <Component
+        wrapper={wrapper}
+        schema={schema}
+      >
+        {({ value, container: Container, containerProps }, indexContainer) => (
+          <Fragment key={indexContainer}>
+            {value?.map((_: any, indexValue: number) => (
+              <Container
+                index={indexValue}
+                schema={schema}
+                key={`${parent}-${identity}-${indexContainer}-${indexValue}-${generatedGroupId}`}
+                containerProps={containerProps}
+              >
+                <FormGenerator
+                  parent={`${identity}.${indexValue}`}
+                  schemas={schema.childs}
+                  groupId={generatedGroupId}
+                  loading={Loading}
+                  error={Error}
+                  wrapper={wrapper}
+                />
+              </Container>
+            ))}
+          </Fragment>
+        )}
+      </Component>
     );
   }
 
@@ -132,30 +124,28 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
     if (!Component) return <Error schema={schema} message="Component not found" />;
 
     return (
-      <Suspense fallback={<Loading schema={schema} />}>
-        <Component
-          wrapper={wrapper}
-          schema={schema}
-        >
-          {({ container: Container, containerProps }, indexValue) => (
-            <Container
-              index={indexValue}
-              schema={schema}
-              key={`${identity}`}
-              containerProps={containerProps}
-            >
-              <FormGenerator
-                parent={`${identity}`}
-                schemas={schema.childs}
-                loading={Loading}
-                error={Error}
-                wrapper={wrapper}
-                groupId={generatedGroupId}
-              />
-            </Container>
-          )}
-        </Component>
-      </Suspense>
+      <Component
+        wrapper={wrapper}
+        schema={schema}
+      >
+        {({ container: Container, containerProps }, indexValue) => (
+          <Container
+            index={indexValue}
+            schema={schema}
+            key={`${identity}`}
+            containerProps={containerProps}
+          >
+            <FormGenerator
+              parent={`${identity}`}
+              schemas={schema.childs}
+              loading={Loading}
+              error={Error}
+              wrapper={wrapper}
+              groupId={generatedGroupId}
+            />
+          </Container>
+        )}
+      </Component>
     );
   }
 
