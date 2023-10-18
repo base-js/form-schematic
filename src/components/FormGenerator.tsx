@@ -164,7 +164,7 @@ export function FormGenerator<Schema extends SchemaCore = SchemaCore>(props: {
   const {
     schemas = ctx.config.schemas,
     parent = "",
-    wrapper = ({ children }: any) => <>{children}</>,
+    wrapper = ({ children }: any) => children,
     loading = () => <></>,
     error = () => <></>,
     groupId = "",
