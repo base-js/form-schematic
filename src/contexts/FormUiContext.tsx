@@ -20,22 +20,31 @@ export type FormUiGroupProps<Schema extends SchemaCore = any> = {
   schemas?: any[];
 };
 
+export type FormUiFieldArrayContainerProps<Schema extends SchemaCore> = {
+  data: NonNullable<Schema["config"]["defaultValue"]>[0];
+  children: any;
+  schema: Schema;
+  index: number;
+  containerProps?: Record<string, any>;
+}
+
 export type FormUiFieldArrayProps<Schema extends SchemaCore = any> = {
   schema: Schema;
   wrapper?: any;
   schemas?: any[];
   children: FC<{
     value: Schema["config"]["defaultValue"],
-    container: FC<{
-      data: NonNullable<Schema["config"]["defaultValue"]>[0];
-      children: any;
-      schema: Schema;
-      index: number;
-      containerProps?: Record<string, any>;
-    }>;
+    container: FC<FormUiFieldArrayContainerProps<Schema>>;
     containerProps?: Record<string, any>
   }>
 };
+
+export type FormUiFieldObjectContainerProps<Schema extends SchemaCore> = {
+  children: any;
+  schema: Schema;
+  index: number;
+  containerProps?: Record<string, any>;
+}
 
 export type FormUiFieldObjectProps<Schema extends SchemaCore = any> = {
   schema: Schema;
@@ -43,12 +52,7 @@ export type FormUiFieldObjectProps<Schema extends SchemaCore = any> = {
   schemas?: any[];
   children: FC<{
     value: Record<string, any>,
-    container: FC<{
-      children: any;
-      schema: Schema;
-      index: number;
-      containerProps?: Record<string, any>;
-    }>
+    container: FC<FormUiFieldObjectContainerProps<Schema>>
     containerProps?: Record<string, any>
   }>
 };
