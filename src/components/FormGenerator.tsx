@@ -98,10 +98,11 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
       >
         {({ value, container: Container, containerProps }, indexContainer) => (
           <Fragment key={indexContainer}>
-            {value?.map((_: any, indexValue: number) => (
+            {value?.map((data: any, indexValue: number) => (
               <Container
                 index={indexValue}
                 schema={schema}
+                data={data}
                 key={`${parent}-${identity}-${indexContainer}-${indexValue}-${generatedGroupId}`}
                 containerProps={containerProps}
               >

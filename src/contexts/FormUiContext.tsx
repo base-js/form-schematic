@@ -27,6 +27,7 @@ export type FormUiFieldArrayProps<Schema extends SchemaCore = any> = {
   children: FC<{
     value: Schema["config"]["defaultValue"],
     container: FC<{
+      data: NonNullable<Schema["config"]["defaultValue"]>[0];
       children: any;
       schema: Schema;
       index: number;
