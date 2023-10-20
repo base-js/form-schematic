@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unused-vars */
-import isEqual from "lodash.isequal";
 import { FormEvent } from "react";
 import { Expression, SchemaCore, SchemaVariant } from "../types";
 import get from "../utils/get";
@@ -8,7 +7,6 @@ import set from "../utils/set";
 import generateId from "../utils/generateId";
 import cloneDeep from "../utils/cloneDeep";
 import { parser } from "../configs/parser";
-import { createDebounce } from "../utils/createDebouce";
 
 // eslint-disable-next-line no-unused-vars
 
@@ -22,6 +20,7 @@ export interface State {
   formStateSupport: {
     isValid: boolean;
     isDirty: boolean;
+    isChanged: boolean;
   };
   props: {
     [key: string]: Partial<{
@@ -73,6 +72,7 @@ export const initializeState: State = {
   formStateSupport: {
     isValid: false,
     isDirty: false,
+    isChanged: false,
   },
   props: {
   },
@@ -218,23 +218,19 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     Object.assign(_state.formStateSupport, formStateValue);
   };
 
-  const setFormStateSupportIsDirty = createDebounce((options: { skipNotify: boolean } = { skipNotify: true }) => {
-    if (!_state.formStateSupport.isDirty) {
-      const isDirty = !isEqual(props.initialValues, _state.fieldsState.values);
+  const setFormStateSupportIsChanged = (options: { skipNotify: boolean } = { skipNotify: true }) => {
+    if (!_state.formStateSupport.isChanged) {
+      setFormStateSupport({
+        isChanged: true,
+      });
 
-      if (isDirty !== _state.formStateSupport.isDirty) {
-        setFormStateSupport({
-          isDirty,
-        });
-
-        if (!options.skipNotify) {
-          notify("supports");
-        }
+      if (!options.skipNotify) {
+        notify("supports");
       }
     }
-  }, 200);
+  };
 
-  const setFormStateSupportValid = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
+  const setFormStateSupportValid = (options: { skipNotify: boolean } = { skipNotify: false }) => {
     const isValid = !hasError();
 
     if (isValid !== _state.formStateSupport.isValid) {
@@ -244,7 +240,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
         notify("supports");
       }
     }
-  }, 200);
+  };
 
   const updateTouch = (
     key: string,
@@ -272,7 +268,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     executeExpression(key);
     notify("fields");
     setFormStateSupportValid();
-    setFormStateSupportIsDirty();
+    setFormStateSupportIsChanged();
   }
 
   function setError(key: string, value: any, options: { skipNotify: boolean; } = { skipNotify: false }) {
@@ -294,7 +290,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     if (!options?.skipNotify) return;
 
     notify("fields");
-    setFormStateSupportIsDirty();
+    setFormStateSupportIsChanged();
   }
 
   const executeSchemaOnValuesChangedTransform = <Schema extends SchemaCore>(
