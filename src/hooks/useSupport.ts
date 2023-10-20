@@ -7,7 +7,7 @@ import { FormContext } from "../contexts/FormContext";
 import useSubscribe from "./useSubscribe";
 
 export const useSupport = <Schema extends SchemaCore = SchemaCore>(props: {
-  ctx: Form<Schema>
+  ctx?: Form<Schema>
   log?: () => void;
 }) => {
   const { ctx: context } = useContext(FormContext);
