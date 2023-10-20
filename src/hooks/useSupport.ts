@@ -16,14 +16,14 @@ export const useSupport = <Schema extends SchemaCore = SchemaCore>(props: {
   useSubscribe({
     ctx,
     getState() {
-      return ctx.state.formStateSupport;
+      return ctx.state?.formStateSupport;
     },
     subject: "supports",
   });
 
   return {
     ctx,
-    state: ctx.state.formStateSupport,
+    state: ctx.state?.formStateSupport,
   };
 };
 
