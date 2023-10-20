@@ -190,6 +190,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
   };
 
   const notify = (subject: keyof Subject) => {
+    props.log?.(`notif ${subject}`);
     for (const fn of _subject[subject]) {
       fn();
     }
@@ -209,39 +210,41 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     }
   };
 
-  const setFormformState = (formStateValue: Partial<State["formState"]>) => {
+  const setFormState = (formStateValue: Partial<State["formState"]>) => {
     Object.assign(_state.formState, formStateValue);
   };
 
-  const setSupportFormState = (formStateValue: Partial<State["formStateSupport"]>) => {
+  const setFormStateSupport = (formStateValue: Partial<State["formStateSupport"]>) => {
     Object.assign(_state.formStateSupport, formStateValue);
   };
 
   const setFormStateSupportIsDirty = createDebounce((options: { skipNotify: boolean } = { skipNotify: true }) => {
-    const isDirty = !isEqual(props.initialValues, _state.fieldsState.values);
+    if (!_state.formStateSupport.isDirty) {
+      const isDirty = !isEqual(props.initialValues, _state.fieldsState.values);
 
-    if (isDirty !== _state.formStateSupport.isDirty) {
-      setSupportFormState({
-        isDirty,
-      });
+      if (isDirty !== _state.formStateSupport.isDirty) {
+        setFormStateSupport({
+          isDirty,
+        });
 
-      if (!options.skipNotify) {
-        notify("supports");
+        if (!options.skipNotify) {
+          notify("supports");
+        }
       }
     }
-  }, 300);
+  }, 200);
 
   const setFormStateSupportValid = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
     const isValid = !hasError();
 
     if (isValid !== _state.formStateSupport.isValid) {
-      setSupportFormState({ isValid });
+      setFormStateSupport({ isValid });
 
       if (!options.skipNotify) {
         notify("supports");
       }
     }
-  }, 300);
+  }, 200);
 
   const updateTouch = (
     key: string,
@@ -593,8 +596,8 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       executeExpression();
       setFormStateSupportValid();
       notify("containers");
-      notify("fields");
       notify("supports");
+      notify("fields");
 
       props.log?.("curr config =", { ..._config });
       props.log?.("curr state =", { ..._state });
@@ -668,8 +671,8 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     subject: _subject,
     event: _event,
     parse,
-    setFormformState,
-    setSupportFormState,
+    setFormState,
+    setFormStateSupport,
     getValue,
     getExtra,
     setValue,

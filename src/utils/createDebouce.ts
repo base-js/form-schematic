@@ -1,4 +1,4 @@
-export const createDebounce = <T extends (..._args: any) => any>(func: T, timeout: number = 300) => {
+export const createDebounce = <T extends (..._args: any) => any>(func: T, timeout: number = 200) => {
   // eslint-disable-next-line no-undef
   let timer: NodeJS.Timeout | null;
 
