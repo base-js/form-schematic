@@ -221,7 +221,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
   };
 
   const setFormStateSupportIsDirty = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
-    const isDirty = !isEqual(props.initialValues, _state.fieldsState.values);
+    const isDirty = !isEqual(_config.initialValues, _state.fieldsState.values);
     if (_state.formStateSupport.isDirty !== isDirty) {
       setFormStateSupport({
         isDirty,
