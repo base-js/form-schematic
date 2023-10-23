@@ -526,7 +526,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
           set(
             _state.fieldsState.values,
             key,
-            schema.config.defaultValue,
+            structuredClone(schema.config.defaultValue),
           );
         } else if (schema.variant === "GROUP") {
           initializeValues(schema.childs);
