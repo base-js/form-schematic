@@ -540,7 +540,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
         if (schema.variant === SchemaVariant.FIELD || schema.variant === SchemaVariant.FIELD_ARRAY || schema.variant === SchemaVariant.FIELD_OBJECT) {
           const key = getSchemaId(schema);
           set(
-            _state.fieldsState.values,
+            _config.initialValues,
             key,
             schema.config.defaultValue,
           );
