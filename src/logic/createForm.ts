@@ -539,11 +539,13 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       try {
         if (schema.variant === SchemaVariant.FIELD || schema.variant === SchemaVariant.FIELD_ARRAY || schema.variant === SchemaVariant.FIELD_OBJECT) {
           const key = getSchemaId(schema);
-          set(
-            _config.initialValues,
-            key,
-            schema.config.defaultValue,
-          );
+          if (get(_config.initialValues, key) === undefined) {
+            set(
+              _config.initialValues,
+              key,
+              schema.config.defaultValue,
+            );
+          }
         } else if (schema.variant === "GROUP") {
           initializeValues(schema.childs);
         }
