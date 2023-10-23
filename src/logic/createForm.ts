@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unused-vars */
+import isEqual from "lodash.isequal";
 import { FormEvent } from "react";
 import { Expression, SchemaCore, SchemaVariant } from "../types";
 import get from "../utils/get";
@@ -7,6 +8,7 @@ import set from "../utils/set";
 import generateId from "../utils/generateId";
 import cloneDeep from "../utils/cloneDeep";
 import { parser } from "../configs/parser";
+import { createDebounce } from "../utils/createDebouce";
 
 // eslint-disable-next-line no-unused-vars
 
@@ -18,7 +20,6 @@ export interface State {
     isValidating: boolean;
   };
   formStateSupport: {
-    isValid: boolean;
     isDirty: boolean;
     isChanged: boolean;
   };
@@ -70,7 +71,6 @@ export const initializeState: State = {
     isValidating: false,
   },
   formStateSupport: {
-    isValid: false,
     isDirty: false,
     isChanged: false,
   },
@@ -103,7 +103,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     initialValues: props.initialValues || {},
   };
 
-  const _state: State = cloneDeep(initializeState);
+  let _state: State = cloneDeep(initializeState);
 
   const _event: Event = {
     submit: {},
@@ -218,29 +218,18 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     Object.assign(_state.formStateSupport, formStateValue);
   };
 
-  const setFormStateSupportIsChanged = (options: { skipNotify: boolean } = { skipNotify: true }) => {
-    if (!_state.formStateSupport.isChanged) {
+  const setFormStateSupportIsDirty = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
+    const isDirty = !isEqual(props.initialValues, _state.fieldsState.values);
+    if (_state.formStateSupport.isDirty !== isDirty) {
       setFormStateSupport({
-        isChanged: true,
+        isDirty,
       });
 
       if (!options.skipNotify) {
         notify("supports");
       }
     }
-  };
-
-  const setFormStateSupportValid = (options: { skipNotify: boolean } = { skipNotify: false }) => {
-    const isValid = !hasError();
-
-    if (isValid !== _state.formStateSupport.isValid) {
-      setFormStateSupport({ isValid });
-
-      if (!options.skipNotify) {
-        notify("supports");
-      }
-    }
-  };
+  }, 300);
 
   const updateTouch = (
     key: string,
@@ -267,8 +256,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     // eslint-disable-next-line no-use-before-define
     executeExpression(key);
     notify("fields");
-    setFormStateSupportValid();
-    setFormStateSupportIsChanged();
+    setFormStateSupportIsDirty();
   }
 
   function setError(key: string, value: any, options: { skipNotify: boolean; } = { skipNotify: false }) {
@@ -278,7 +266,6 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     if (options?.skipNotify) return;
 
     notify("fields");
-    setFormStateSupportValid();
   }
 
   function setValues(values: State["fieldsState"]["values"], options: { skipNotify: boolean; } = { skipNotify: false }) {
@@ -290,7 +277,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     if (!options?.skipNotify) return;
 
     notify("fields");
-    setFormStateSupportIsChanged();
+    setFormStateSupportIsDirty();
   }
 
   const executeSchemaOnValuesChangedTransform = <Schema extends SchemaCore>(
@@ -580,7 +567,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       _config.initialValues = initialValues;
       _config.extraData = extraData;
 
-      Object.assign(_state, cloneDeep(initializeState));
+      _state = cloneDeep(initializeState);
 
       // generate key
       generatedSchemaId(_config.schemas as Schema[]);
@@ -590,10 +577,10 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       Object.assign(_state.fieldsState.values, cloneDeep(_config.initialValues));
 
       executeExpression();
-      setFormStateSupportValid();
       notify("containers");
       notify("supports");
       notify("fields");
+      notify("extras");
 
       props.log?.("curr config =", { ..._config });
       props.log?.("curr state =", { ..._state });
@@ -656,6 +643,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       notify("containers");
       notify("fields");
       notify("supports");
+      notify("extras");
     }
   };
 
