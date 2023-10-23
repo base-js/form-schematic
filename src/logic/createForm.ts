@@ -20,6 +20,7 @@ export interface State {
     isValidating: boolean;
   };
   formStateSupport: {
+    isValid: boolean;
     isDirty: boolean;
     isChanged: boolean;
   };
@@ -71,6 +72,7 @@ export const initializeState: State = {
     isValidating: false,
   },
   formStateSupport: {
+    isValid: false,
     isDirty: false,
     isChanged: false,
   },
@@ -103,7 +105,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     initialValues: props.initialValues || {},
   };
 
-  let _state: State = cloneDeep(initializeState);
+  const _state: State = cloneDeep(initializeState);
 
   const _event: Event = {
     submit: {},
@@ -219,11 +221,23 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
   };
 
   const setFormStateSupportIsDirty = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
-    const isDirty = !isEqual(_config.initialValues, _state.fieldsState.values);
+    const isDirty = !isEqual(props.initialValues, _state.fieldsState.values);
     if (_state.formStateSupport.isDirty !== isDirty) {
       setFormStateSupport({
         isDirty,
       });
+
+      if (!options.skipNotify) {
+        notify("supports");
+      }
+    }
+  }, 300);
+
+  const setFormStateSupportValid = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
+    const isValid = !hasError();
+
+    if (isValid !== _state.formStateSupport.isValid) {
+      setFormStateSupport({ isValid });
 
       if (!options.skipNotify) {
         notify("supports");
@@ -256,6 +270,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     // eslint-disable-next-line no-use-before-define
     executeExpression(key);
     notify("fields");
+    setFormStateSupportValid();
     setFormStateSupportIsDirty();
   }
 
@@ -266,6 +281,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     if (options?.skipNotify) return;
 
     notify("fields");
+    setFormStateSupportValid();
   }
 
   function setValues(values: State["fieldsState"]["values"], options: { skipNotify: boolean; } = { skipNotify: false }) {
@@ -526,7 +542,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
           set(
             _state.fieldsState.values,
             key,
-            structuredClone(schema.config.defaultValue),
+            schema.config.defaultValue,
           );
         } else if (schema.variant === "GROUP") {
           initializeValues(schema.childs);
@@ -567,7 +583,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       _config.initialValues = initialValues;
       _config.extraData = extraData;
 
-      _state = cloneDeep(initializeState);
+      Object.assign(_state, cloneDeep(initializeState));
 
       // generate key
       generatedSchemaId(_config.schemas as Schema[]);
@@ -577,10 +593,10 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       Object.assign(_state.fieldsState.values, cloneDeep(_config.initialValues));
 
       executeExpression();
+      setFormStateSupportValid();
       notify("containers");
       notify("supports");
       notify("fields");
-      notify("extras");
 
       props.log?.("curr config =", { ..._config });
       props.log?.("curr state =", { ..._state });
@@ -643,7 +659,6 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       notify("containers");
       notify("fields");
       notify("supports");
-      notify("extras");
     }
   };
 
