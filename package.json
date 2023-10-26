@@ -9,7 +9,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@adifkz/exp-p": "^1.0.19",
+    "@adifkz/exp-p": "^1.0.20",
     "@babel/runtime": "^7.23.2",
     "eslint-plugin-jest": "^27.4.2",
     "lodash.clonedeep": "^4.5.0",
