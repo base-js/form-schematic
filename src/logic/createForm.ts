@@ -557,9 +557,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
 
   const generatedSchemaId = (schemas: Schema[]) => {
     for (const schema of schemas) {
-      if (!schema.id) {
-        schema.id = schema.variant + schema.component + generateId();
-      }
+      schema.id = schema.variant + schema.component + generateId();
 
       if (schema.variant === "FIELD-ARRAY" && Array.isArray(schema.childs)) {
         generatedSchemaId(schema.childs);
