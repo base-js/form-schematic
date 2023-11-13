@@ -262,16 +262,14 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     initValue(key, value);
 
     // eslint-disable-next-line no-useless-return
-    if (options?.skipNotify) return;
+    if (!options?.skipTouch) updateTouch(key, true, false);
 
-    if (!options?.skipTouch) {
-      updateTouch(key, true, false);
-    }
     // eslint-disable-next-line no-use-before-define
     executeExpression(key);
-    notify("fields");
-    setFormStateSupportValid();
+    // setFormStateSupportValid();
     setFormStateSupportIsDirty();
+
+    if (options?.skipNotify) notify("fields");
   }
 
   function setError(key: string, value: any, options: { skipNotify: boolean; } = { skipNotify: false }) {
@@ -281,7 +279,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     if (options?.skipNotify) return;
 
     notify("fields");
-    setFormStateSupportValid();
+    // setFormStateSupportValid();
   }
 
   function setValues(values: State["fieldsState"]["values"], options: { skipNotify: boolean; } = { skipNotify: false }) {
@@ -593,7 +591,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       Object.assign(_state.fieldsState.values, cloneDeep(_config.initialValues));
 
       executeExpression();
-      setFormStateSupportValid();
+      // setFormStateSupportValid();
       notify("containers");
       notify("supports");
       notify("fields");
