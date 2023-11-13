@@ -269,7 +269,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     // setFormStateSupportValid();
     setFormStateSupportIsDirty();
 
-    if (options?.skipNotify) notify("fields");
+    if (!options?.skipNotify) notify("fields");
   }
 
   function setError(key: string, value: any, options: { skipNotify: boolean; } = { skipNotify: false }) {
