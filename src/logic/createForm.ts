@@ -59,6 +59,7 @@ export interface CreateFormProps<Schema> {
   schemas: Schema[];
   extraData?: Record<string, any>;
   shouldFocusError?: boolean;
+  autogenerateId?: boolean;
   log?: (...args: any) => void;
 }
 
@@ -555,7 +556,11 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
 
   const generatedSchemaId = (schemas: Schema[]) => {
     for (const schema of schemas) {
-      schema.id = schema.variant + schema.component + generateId();
+      if (props.autogenerateId) {
+        schema.id = schema.variant + schema.component + generateId();
+      } else {
+        schema.id = schema.id ?? schema.variant + schema.component + generateId();
+      }
 
       if (schema.variant === "FIELD-ARRAY" && Array.isArray(schema.childs)) {
         generatedSchemaId(schema.childs);
