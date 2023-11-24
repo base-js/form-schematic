@@ -23,7 +23,7 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
   wrapper,
   schema,
   parent,
-  groupId,
+  groupId = generateId(),
   error: Error,
   ctx,
   ...rest
@@ -37,7 +37,7 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
 }) {
   const { components } = useContext(FormUiContext);
   const identity = getSchemaName(schema, parent);
-  const generatedGroupId = useMemo(() => (groupId) + generateId(), [ctx]);
+  const generatedGroupId = useMemo(() => (groupId), [ctx]);
 
   if (schema.variant === "FIELD") {
     const Component = components[schema.variant][schema.component];
@@ -167,11 +167,11 @@ export function FormGenerator<Schema extends SchemaCore = SchemaCore>(props: {
     parent = "",
     wrapper = ({ children }: any) => <>{children}</>,
     error = () => <></>,
-    groupId = "",
+    groupId = generateId(),
     ...rest
   } = props;
 
-  const generatedGroupId = useMemo(() => (groupId) + generateId(), [ctx]);
+  const generatedGroupId = useMemo(() => (groupId), [ctx]);
 
   return (
     <>
