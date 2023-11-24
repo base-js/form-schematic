@@ -16,6 +16,7 @@ export interface State {
   formState: {
     isSubmitting: boolean;
     isSubmitted: boolean;
+    isForceSubmitted: boolean;
     isSubmitSuccessful: boolean;
     isValidating: boolean;
   };
@@ -68,6 +69,7 @@ interface ExecuteOption { parent: string; extraData: Record<string, any>; name: 
 export const initializeState: State = {
   formState: {
     isSubmitted: false,
+    isForceSubmitted: false,
     isSubmitSuccessful: false,
     isSubmitting: false,
     isValidating: false,
@@ -599,7 +601,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       // setFormStateSupportValid();
       notify("containers");
       notify("supports");
-      notify("fields");
+      // notify("fields");
 
       props.log?.("curr config =", { ..._config });
       props.log?.("curr state =", { ..._state });
@@ -634,6 +636,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
 
     try {
       _state.formState.isSubmitting = true;
+      _state.formState.isForceSubmitted = !!options.forceSubmit;
       notify("containers");
 
       executeEventSubmit();

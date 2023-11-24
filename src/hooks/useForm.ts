@@ -2,12 +2,12 @@ import {
   useEffect, useRef,
 } from "react";
 import createForm, { CreateFormProps, Form } from "../logic/createForm";
-import useUpdate from "./useUpdate";
+// import useUpdate from "./useUpdate";
 import { SchemaCore } from "../types";
 import useContainer from "./useContainer";
 
 export const useForm = <Schema extends SchemaCore = SchemaCore>(props: CreateFormProps<Schema>) => {
-  const update = useUpdate();
+  // const update = useUpdate();
   const _ctx = useRef<Form<Schema>>(null as any);
 
   if (!_ctx.current) {
@@ -26,7 +26,7 @@ export const useForm = <Schema extends SchemaCore = SchemaCore>(props: CreateFor
       initialValues: props.initialValues,
     });
     props.log?.("update useForm");
-    update();
+    // update();
   }, [props.schemas, props.extraData, props.initialValues]);
 
   return {
