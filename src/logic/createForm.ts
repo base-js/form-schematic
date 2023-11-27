@@ -642,7 +642,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       executeEventSubmit();
       executeExpression();
 
-      if (hasError() && !options.forceSubmit) {
+      if (hasError() && !_state.formState.isForceSubmitted) {
         if (props.shouldFocusError) {
           const name = Object.keys(_state.fieldsState.errors)[0];
           setFocus(name);
