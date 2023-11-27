@@ -236,17 +236,17 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     }
   }, 300);
 
-  const setFormStateSupportValid = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
-    const isValid = !hasError();
+  // const setFormStateSupportValid = createDebounce((options: { skipNotify: boolean } = { skipNotify: false }) => {
+  //   const isValid = !hasError();
 
-    if (isValid !== _state.formStateSupport.isValid) {
-      setFormStateSupport({ isValid });
+  //   if (isValid !== _state.formStateSupport.isValid) {
+  //     setFormStateSupport({ isValid });
 
-      if (!options.skipNotify) {
-        notify("supports");
-      }
-    }
-  }, 300);
+  //     if (!options.skipNotify) {
+  //       notify("supports");
+  //     }
+  //   }
+  // }, 300);
 
   const updateTouch = (
     key: string,
@@ -601,7 +601,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       // setFormStateSupportValid();
       notify("containers");
       notify("supports");
-      // notify("fields");
+      notify("fields");
 
       props.log?.("curr config =", { ..._config });
       props.log?.("curr state =", { ..._state });
