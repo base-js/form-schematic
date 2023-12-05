@@ -12,6 +12,8 @@ import { SchemaCore } from "../types";
 import { Form } from "../logic/createForm";
 import useSubscribe from "./useSubscribe";
 
+const emptyArray: any[] = [];
+
 // eslint-disable-next-line no-use-before-define
 export const useFieldArray = <Schema extends SchemaCore = SchemaCore>(props: {
   ctx?: Form<Schema>;
@@ -29,7 +31,7 @@ export const useFieldArray = <Schema extends SchemaCore = SchemaCore>(props: {
     getState() {
       const state = ctx.getFieldState(schema);
       const { unqiueKey } = props.schema.config;
-      const value = state.value.map((item: any) => (unqiueKey ? item[unqiueKey] : item));
+      const value = state.value?.map((item: any) => (unqiueKey ? item[unqiueKey] : item)) || emptyArray;
       return {
         ...state,
         value,
