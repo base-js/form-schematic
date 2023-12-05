@@ -1,4 +1,5 @@
 export * from "./types";
+export * from "./logic/evaluate";
 export * from "./logic/validate";
 export * from "./logic/createForm";
 export * from "./configs/parser";
