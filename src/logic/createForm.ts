@@ -635,6 +635,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     event?.preventDefault();
 
     try {
+      _state.formState.isSubmitted = true;
       _state.formState.isSubmitting = true;
       _state.formState.isForceSubmitted = !!options.forceSubmit;
       notify("containers");
@@ -661,7 +662,6 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       //
     } finally {
       _state.formState.isSubmitting = false;
-      _state.formState.isSubmitted = true;
       notify("containers");
       notify("fields");
       notify("supports");
