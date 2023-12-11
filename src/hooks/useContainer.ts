@@ -7,7 +7,7 @@ import useSubscribe from "./useSubscribe";
 export const useContainer = <Schema extends SchemaCore = SchemaCore>(props: {
   ctx?: Form<Schema>;
   log?: () => void;
-}) => {
+} = {}) => {
   const { ctx: context } = useContext(FormContext);
   const { ctx = context } = props as { ctx: Form<Schema> };
 
