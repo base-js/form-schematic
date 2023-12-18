@@ -168,7 +168,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
   function getFieldState<Schema extends SchemaCore>(schema: Schema) {
     const id = getSchemaId(schema);
     return {
-      value: getValue(id) as Schema["config"]["defaultValue"],
+      value: (getValue(id) ?? getExtra(id)) as Schema["config"]["defaultValue"],
       error: getError(id),
       touched: getTouch(id),
       props: (_state.props[id] || {}) as { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] },
@@ -182,7 +182,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     const id = getSchemaId(schema);
 
     return {
-      value: getValue(id) as Value,
+      value: (getValue(id) ?? getExtra(id)) as Value,
       props: _state.props[id] as { [K in keyof Schema["properties"]]?: NonNullable<Schema["properties"][K]>["value"] },
     };
   }
