@@ -574,11 +574,14 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     }
   };
 
-  const reset = ({
-    initialValues = _config.initialValues,
-    schemas = _config.schemas,
-    extraData = _config.extraData,
-  }: Partial<Omit<CreateFormProps<Schema>, "formula">>) => {
+  const reset = (
+    {
+      initialValues = _config.initialValues,
+      schemas = _config.schemas,
+      extraData = _config.extraData,
+    }: Partial<Omit<CreateFormProps<Schema>, "formula">>,
+    autogenerateId = true,
+  ) => {
     try {
       props.log?.("prev config =", { ..._config });
       props.log?.("prev state =", { ..._state });
@@ -591,7 +594,9 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       Object.assign(_state, cloneDeep(initializeState));
 
       // generate key
-      generatedSchemaId(_config.schemas as Schema[]);
+      if (autogenerateId) {
+        generatedSchemaId(_config.schemas as Schema[]);
+      }
 
       // initialize
       initializeValues(_config.schemas as Schema[]);

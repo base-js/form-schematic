@@ -4,7 +4,7 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable consistent-return */
 /* eslint-disable react/jsx-key */
-import { FC, Fragment, useContext, useMemo } from "react";
+import { FC, useContext } from "react";
 import { Form, getSchemaName } from "../logic/createForm";
 import { FormContext } from "../contexts";
 import { SchemaCore } from "../types";
@@ -25,7 +25,7 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
   parent,
   groupId = generateId(),
   error: Error,
-  ctx,
+  log,
   ...rest
 }: {
   ctx: Form<Schema>,
@@ -34,10 +34,12 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
   parent?: string;
   wrapper?: any;
   error: FC<{ message: string; schema: Schema }>;
+  log?: (..._args: any) => void;
 }) {
   const { components } = useContext(FormUiContext);
   const identity = getSchemaName(schema, parent);
-  const generatedGroupId = useMemo(() => (groupId), [ctx]);
+
+  log?.("ComponentGateway", { parent, groupId });
 
   if (schema.variant === "FIELD") {
     const Component = components[schema.variant][schema.component];
@@ -80,7 +82,7 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
           schemas={schema.childs}
           error={Error}
           wrapper={wrapper}
-          groupId={generatedGroupId}
+          groupId={groupId}
         />
       </Component>
     );
@@ -97,25 +99,25 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
         {...rest}
       >
         {({ value, container: Container, containerProps }, indexContainer) => (
-          <Fragment key={indexContainer}>
+          <>
             {value?.map((data: any, indexValue: number) => (
               <Container
                 index={indexValue}
                 schema={schema}
                 data={data}
-                key={`${parent}-${identity}-${indexContainer}-${indexValue}-${generatedGroupId}`}
+                key={`${schema.id}-${indexContainer}-${indexValue}`}
                 containerProps={containerProps}
               >
                 <FormGenerator
                   parent={`${identity}.${indexValue}`}
                   schemas={schema.childs}
-                  groupId={generatedGroupId}
+                  groupId={groupId}
                   error={Error}
                   wrapper={wrapper}
                 />
               </Container>
             ))}
-          </Fragment>
+          </>
         )}
       </Component>
     );
@@ -135,7 +137,6 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
           <Container
             index={indexValue}
             schema={schema}
-            key={`${identity}`}
             containerProps={containerProps}
           >
             <FormGenerator
@@ -143,7 +144,7 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
               schemas={schema.childs}
               error={Error}
               wrapper={wrapper}
-              groupId={generatedGroupId}
+              groupId={groupId}
             />
           </Container>
         )}
@@ -160,6 +161,7 @@ export function FormGenerator<Schema extends SchemaCore = SchemaCore>(props: {
   wrapper?: any;
   groupId?: string;
   error?: FC<{ message: string; schema: Schema }>;
+  log?: (..._args: any) => void
 }) {
   const { ctx } = useContext(FormContext);
   const {
@@ -168,28 +170,26 @@ export function FormGenerator<Schema extends SchemaCore = SchemaCore>(props: {
     wrapper = ({ children }: any) => <>{children}</>,
     error = () => <></>,
     groupId = generateId(),
+    log,
     ...rest
   } = props;
 
-  const generatedGroupId = useMemo(() => (groupId), [ctx]);
+  log?.("FormGenerator", { groupId });
 
   return (
     <>
-      {schemas.map((schema) => {
-        const key = schema.variant + schema.component + (schema.config?.name || "") + (schema.id || "") + parent + generatedGroupId;
-        return (
-          <ComponentGateway
-            key={key}
-            groupId={generatedGroupId}
-            wrapper={wrapper}
-            parent={parent}
-            schema={schema}
-            ctx={ctx}
-            error={error}
-            {...rest}
-          />
-        );
-      })}
+      {schemas.map((schema) => (
+        <ComponentGateway
+          key={`${groupId}-${schema.id}`}
+          groupId={groupId}
+          wrapper={wrapper}
+          parent={parent}
+          schema={schema}
+          ctx={ctx}
+          error={error}
+          {...rest}
+        />
+      ))}
     </>
   );
 }
