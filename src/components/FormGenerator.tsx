@@ -25,7 +25,6 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
   parent,
   groupId = generateId(),
   error: Error,
-  log,
   ...rest
 }: {
   ctx: Form<Schema>,
@@ -38,8 +37,6 @@ export function ComponentGateway<Schema extends SchemaCore = SchemaCore>({
 }) {
   const { components } = useContext(FormUiContext);
   const identity = getSchemaName(schema, parent);
-
-  log?.("ComponentGateway", { parent, groupId });
 
   if (schema.variant === "FIELD") {
     const Component = components[schema.variant][schema.component];
@@ -178,19 +175,22 @@ export function FormGenerator<Schema extends SchemaCore = SchemaCore>(props: {
 
   return (
     <>
-      {schemas.map((schema) => (
-        <ComponentGateway
-          key={`${groupId}-${schema.id}`}
-          groupId={groupId}
-          wrapper={wrapper}
-          parent={parent}
-          schema={schema}
-          ctx={ctx}
-          error={error}
-          log={log}
-          {...rest}
-        />
-      ))}
+      {schemas.map((schema) => {
+        log?.("FormGenerator-Schemas", { key: `${groupId}-${schema.id}` });
+        return (
+          <ComponentGateway
+            key={`${groupId}-${schema.id}`}
+            groupId={groupId}
+            wrapper={wrapper}
+            parent={parent}
+            schema={schema}
+            ctx={ctx}
+            error={error}
+            log={log}
+            {...rest}
+          />
+        );
+      })}
     </>
   );
 }
