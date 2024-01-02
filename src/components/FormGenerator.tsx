@@ -187,6 +187,7 @@ export function FormGenerator<Schema extends SchemaCore = SchemaCore>(props: {
           schema={schema}
           ctx={ctx}
           error={error}
+          log={log}
           {...rest}
         />
       ))}
