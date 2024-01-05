@@ -122,6 +122,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
   };
 
   const parse = (expression: Expression, terms: Record<string, any> = {}) => parser.evaluate(expression, {
+    __INITIAL__: _config.initialValues,
     ..._config.extraData,
     ..._state.fieldsState.values,
     ...terms,
