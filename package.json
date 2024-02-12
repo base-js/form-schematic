@@ -1,6 +1,6 @@
 {
   "name": "form-trial",
-  "version": "0.0.68-development",
+  "version": "0.0.70-development",
   "license": "MIT",
   "private": false,
   "author": "Adi Fatkhurozi <ady.fatkhurozi@gmail.com>",
@@ -9,7 +9,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@adifkz/exp-p": "^1.0.25",
+    "@adifkz/exp-p": "^1.0.26",
     "@babel/runtime": "^7.23.2",
     "eslint-plugin-jest": "^27.4.2",
     "lodash.clonedeep": "^4.5.0",
