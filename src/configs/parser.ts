@@ -5,8 +5,8 @@ const parser = createParser({});
 parser.setFunctions({
   is_email: (value: any) => {
     try {
-      return value?.match(
-        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+      return !!value?.match(
+        /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/g,
       );
     } catch (error) {
       return false;
