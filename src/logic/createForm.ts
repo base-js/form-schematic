@@ -361,7 +361,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
           //
         }
       } else {
-        //
+        updateProps(propertyKey as any, id, { reference: property?.reference }, terms);
       }
     }
   };
