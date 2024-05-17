@@ -327,9 +327,9 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       const result = (reference ? parse(reference, terms) : value);
       initProp(name, id, result);
     } catch (error) {
-      if (value) {
-        initProp(name, id, value);
-      }
+      // if (value) {
+      //   initProp(name, id, value);
+      // }
     }
   };
 
@@ -344,14 +344,10 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       const property = schema.properties[propertyKey];
       if (property?.conditions) {
         for (const { condition, value, reference } of property.conditions) {
-          try {
-            const result = parse(condition, terms);
-            if (result) {
-              updateProps(propertyKey as any, id, { value, reference }, terms);
-              break;
-            }
-          } catch (error) {
-            //
+          const result = parse(condition, terms);
+          if (result) {
+            updateProps(propertyKey as any, id, { value, reference }, terms);
+            break;
           }
         }
       } else if (property?.reference) {
@@ -361,7 +357,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
           //
         }
       } else {
-        updateProps(propertyKey as any, id, {}, terms);
+        //
       }
     }
   };
