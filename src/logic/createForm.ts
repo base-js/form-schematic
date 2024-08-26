@@ -162,8 +162,8 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     _state.props[id][name] = value;
   }
 
-  function getProp(name: keyof State["props"][keyof State["props"]], id: string) {
-    return _state.props[id]?.[name];
+  function getProp(name: keyof State["props"][keyof State["props"]], id: string, schema?: Schema) {
+    return _state.props[id]?.[name] || schema?.properties?.[name]?.value
   }
 
   function getFieldState<Schema extends SchemaCore>(schema: Schema) {
@@ -459,7 +459,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     });
   };
 
-  const executeSchema = <Schema extends SchemaCore>(
+  const executeSchema = (
     schemas: Schema[],
     options: Partial<ExecuteOption> = { parent: "", extraData: {} },
   ) => {
@@ -483,7 +483,8 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       executeSchemaProperties(schema, options);
 
       // skip when hidden is false
-      if (getProp("hidden", id)) continue;
+      if (getProp("hidden", id, schema)) continue;
+      if (getProp("disabled", id, schema)) continue;
 
       if (schema.variant === SchemaVariant.GROUP) {
         executeSchema(schema.childs!, options);
