@@ -64,7 +64,7 @@ export interface CreateFormProps<Schema> {
   log?: (...args: any) => void;
 }
 
-interface ExecuteOption { parent: string; extraData: Record<string, any>; name: string }
+interface ExecuteOption { parent: string; extraData: Record<string, any>; name: string; skipRuleExecution?: boolean }
 
 export const initializeState: State = {
   formState: {
@@ -484,7 +484,9 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
 
       // skip when hidden is false
       if (getProp("hidden", id, schema)) continue;
-      if (getProp("disabled", id, schema)) continue;
+      if (getProp("disabled", id, schema)) {
+        options.skipRuleExecution = true;
+      }
 
       if (schema.variant === SchemaVariant.GROUP) {
         executeSchema(schema.childs!, options);
@@ -494,13 +496,15 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       // execute rules except view
       if (schema.variant === SchemaVariant.VIEW) continue;
 
-      if (schema.variant === SchemaVariant.FIELD) {
+      if (schema.variant === SchemaVariant.FIELD && !options.skipRuleExecution) {
         executeSchemaRules(schema, options);
         continue;
       }
 
       if (schema.variant === SchemaVariant.FIELD_ARRAY) {
-        executeSchemaRules(schema, options);
+        if (!options.skipRuleExecution) {
+          executeSchemaRules(schema, options);
+        }
         executeSchemaArray(
           schema.childs!,
           {
@@ -512,7 +516,9 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       }
 
       if (schema.variant === SchemaVariant.FIELD_OBJECT) {
-        executeSchemaRules(schema, options);
+        if (!options.skipRuleExecution) {
+          executeSchemaRules(schema, options);
+        }
         executeSchemaObject(
           schema.childs!,
           {
