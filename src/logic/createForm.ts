@@ -465,52 +465,52 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
   ) => {
     if (!schemas) return;
 
+
     for (const schema of schemas) {
-      const id = getSchemaId(schema as Schema, options.parent);
+      const optionsConfig = { ...options }
+      const id = getSchemaId(schema as Schema, optionsConfig.parent);
 
       if (
         schema.variant === SchemaVariant.FIELD
         || schema.variant === SchemaVariant.FIELD_ARRAY
         || schema.variant === SchemaVariant.FIELD_OBJECT
       ) {
-        if (options.name === id) {
-          executeSchemaOnSelfChangedOverrideValues(schema, options);
+        if (optionsConfig.name === id) {
+          executeSchemaOnSelfChangedOverrideValues(schema, optionsConfig);
         } else if (!_state.trackOnState.self_changed_override_values[schema.config?.name!]) {
-          executeSchemaOnValuesChangedTransform(schema, options);
+          executeSchemaOnValuesChangedTransform(schema, optionsConfig);
         }
       }
 
-      executeSchemaProperties(schema, options);
+      executeSchemaProperties(schema, optionsConfig);
 
       // skip when hidden is false
       if (getProp("hidden", id, schema)) continue;
       if (getProp("disabled", id, schema)) {
-        options.skipRuleExecution = true;
-      } else {
-        options.skipRuleExecution = false;
+        optionsConfig.skipRuleExecution = true;
       }
 
       if (schema.variant === SchemaVariant.GROUP) {
-        executeSchema(schema.childs!, options);
+        executeSchema(schema.childs!, optionsConfig);
         continue;
       }
 
       // execute rules except view
       if (schema.variant === SchemaVariant.VIEW) continue;
 
-      if (schema.variant === SchemaVariant.FIELD && !options.skipRuleExecution) {
-        executeSchemaRules(schema, options);
+      if (schema.variant === SchemaVariant.FIELD && !optionsConfig.skipRuleExecution) {
+        executeSchemaRules(schema, optionsConfig);
         continue;
       }
 
       if (schema.variant === SchemaVariant.FIELD_ARRAY) {
-        if (!options.skipRuleExecution) {
-          executeSchemaRules(schema, options);
+        if (!optionsConfig.skipRuleExecution) {
+          executeSchemaRules(schema, optionsConfig);
         }
         executeSchemaArray(
           schema.childs!,
           {
-            ...options,
+            ...optionsConfig,
             parent: id,
           },
         );
@@ -518,13 +518,13 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       }
 
       if (schema.variant === SchemaVariant.FIELD_OBJECT) {
-        if (!options.skipRuleExecution) {
-          executeSchemaRules(schema, options);
+        if (!optionsConfig.skipRuleExecution) {
+          executeSchemaRules(schema, optionsConfig);
         }
         executeSchemaObject(
           schema.childs!,
           {
-            ...options,
+            ...optionsConfig,
             parent: id,
           },
         );
