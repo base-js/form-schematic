@@ -343,13 +343,16 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     for (const propertyKey in schema.properties) {
       const property = schema.properties[propertyKey];
       if (property?.conditions) {
+        let selectedcondition = null;
         for (const { condition, value, reference } of property.conditions) {
           const result = parse(condition, terms);
           if (result) {
+            selectedcondition = true;
             updateProps(propertyKey as any, id, { value, reference }, terms);
             break;
           }
         }
+        if (!selectedcondition) updateProps(propertyKey as any, id, { value: property?.value }, terms);
       } else if (property?.reference) {
         try {
           updateProps(propertyKey as any, id, { reference: property?.reference }, terms);
