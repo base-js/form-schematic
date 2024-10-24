@@ -163,7 +163,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
   }
 
   function getProp(name: keyof State["props"][keyof State["props"]], id: string, schema?: Schema) {
-    return _state.props[id]?.[name] || schema?.properties?.[name]?.value
+    return _state.props[id]?.[name] ?? schema?.properties?.[name]?.value
   }
 
   function getFieldState<Schema extends SchemaCore>(schema: Schema) {
@@ -343,16 +343,13 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     for (const propertyKey in schema.properties) {
       const property = schema.properties[propertyKey];
       if (property?.conditions) {
-        let selectedcondition = null;
         for (const { condition, value, reference } of property.conditions) {
           const result = parse(condition, terms);
           if (result) {
-            selectedcondition = true;
             updateProps(propertyKey as any, id, { value, reference }, terms);
-            break;
+            return;
           }
         }
-        if (!selectedcondition) updateProps(propertyKey as any, id, { value: property?.value }, terms);
       } else if (property?.reference) {
         try {
           updateProps(propertyKey as any, id, { reference: property?.reference }, terms);
@@ -489,6 +486,8 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
       if (getProp("hidden", id, schema)) continue;
       if (getProp("disabled", id, schema)) {
         options.skipRuleExecution = true;
+      } else {
+        options.skipRuleExecution = false;
       }
 
       if (schema.variant === SchemaVariant.GROUP) {
