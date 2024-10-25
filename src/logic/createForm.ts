@@ -343,12 +343,17 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     for (const propertyKey in schema.properties) {
       const property = schema.properties[propertyKey];
       if (property?.conditions) {
+        let isMatched = false;
         for (const { condition, value, reference } of property.conditions) {
           const result = parse(condition, terms);
           if (result) {
+            isMatched = true
             updateProps(propertyKey as any, id, { value, reference }, terms);
-            return;
+            break;
           }
+        }
+        if (!isMatched && typeof property.value !== 'undefined') {
+          updateProps(propertyKey as any, id, { value: property.value }, terms);
         }
       } else if (property?.reference) {
         try {
