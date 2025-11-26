@@ -313,6 +313,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
           {
             ...options.extraData,
             __SELF__: getValue(id),
+            __SCHEMA__: schema
           },
         ),
       );
@@ -338,7 +339,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     options: Partial<ExecuteOption> = { parent: "", extraData: {} },
   ) => {
     const id = getSchemaId(schema, options.parent);
-    const terms = { ...options.extraData, __SELF__: getValue(id) };
+    const terms = { ...options.extraData, __SELF__: getValue(id), __SCHEMA__: schema };
 
     for (const propertyKey in schema.properties) {
       const property = schema.properties[propertyKey];
@@ -381,7 +382,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     if (!schema.on?.self_changed_override_values) return;
 
     const id = getSchemaId(schema, options.parent);
-    const terms = { ...options.extraData, __SELF__: getValue(id) };
+    const terms = { ...options.extraData, __SELF__: getValue(id), __SCHEMA__: schema };
 
     for (const { condition, reference, value } of schema.on?.self_changed_override_values) {
       if (condition) {
@@ -415,7 +416,7 @@ const createForm = <Schema extends SchemaCore>(props: CreateFormProps<Schema>) =
     if (!schema.rules) return;
 
     const id = getSchemaId(schema, options.parent);
-    const terms = { ...options.extraData, __SELF__: getValue(id) };
+    const terms = { ...options.extraData, __SELF__: getValue(id), __SCHEMA__: schema };
 
     for (const { condition, reference, value } of schema.rules) {
       try {

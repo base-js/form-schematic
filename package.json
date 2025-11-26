@@ -1,6 +1,6 @@
 {
   "name": "form-trial",
-  "version": "0.0.91-development",
+  "version": "0.0.92-development",
   "license": "MIT",
   "private": false,
   "author": "Adi Fatkhurozi <ady.fatkhurozi@gmail.com>",
@@ -17,7 +17,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "user": "^0.0.0"
   },
   "scripts": {
     "serve": "npx serve -s app/build",
